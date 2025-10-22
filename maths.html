@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler's Theorem Calculator - Engineering Mathematics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            padding: 40px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-radius: 15px;
+            border: 2px solid #667eea;
+        }
+
+        .results h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .verified {
+            background: #c8e6c9;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        .not-verified {
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #f57f17;
+        }
+
+        .coprime-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .steps-list {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .steps-list li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧮 Euler's Theorem Calculator</h1>
+            <p>Engineering Mathematics - Complete Analysis Tool</p>
+        </div>
+
+        <!-- Calculator Card -->
+        <div class="calculator-card">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('homogeneous')">Homogeneous Functions</button>
+                <button class="tab" onclick="switchTab('totient')">Totient Function φ(n)</button>
+                <button class="tab" onclick="switchTab('formula')">Euler's Formula</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Homogeneous Functions Tab -->
+                <div id="homogeneous" class="tab-panel active">
+                    <div class="info-box">
+                        <h3>📚 Euler's Theorem for Homogeneous Functions</h3>
+                        <p>If f(x,y) is homogeneous of degree n, then: x(∂f/∂x) + y(∂f/∂y) = n·f(x,y)</p>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>Degree (n):</label>
+                            <input type="number" id="degree" value="2" min="1" max="5" onchange="updateCoefficients()">
+                        </div>
+                        <div class="form-group">
+                            <label>Coefficients (comma-separated):</label>
+                            <input type="text" id="coeffs" value="1, 2, 1">
+                        </div>
+                        <div class="form-group">
+                            <label>x value:</label>
+                            <input type="number" id="x" value="1" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>y value:</label>
+                            <input type="number" id="y" value="1" step="0.1">
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="calculateHomogeneous()">Calculate ➜</button>
+                    <div id="homo-results"></div>
+                </div>
+
+                <!-- Totient Function Tab -->
+                <div id="totient" class="tab-panel">
+                    <div class="info-box" style="background: #e8f5e9; border-color: #4caf50;">
+                        <h3>📚 Euler's Totient Function φ(n)</h3>
+                        <p>Counts positive integers up to n that are coprime to n. φ(n) = n × ∏(1 - 1/p) for all prime
+                            factors p.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Enter n (positive integer):</label>
+                        <input type="number" id="n" value="10" min="1" max="1000">
+                    </div>
+
+                    <button class="btn" onclick="calculateTotient()">Calculate φ(n) ➜</button>
+                    <div id="totient-results"></div>
+                </div>
+
+                <!-- Euler's Formula Tab -->
+                <div id="formula" class="tab-panel">
+                    <div class="info-box" style="background: #f3e5f5; border-color: #9c27b0;">
+                        <h3>📚 Euler's Formula</h3>
+                        <p>e^(ix) = cos(x) + i·sin(x) - Fundamental relationship between exponential and trigonometric
+                            functions</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Angle (degrees):</label>
+                        <input type="number" id="angle" value="45" step="1">
+                    </div>
+
+                    <button class="btn" onclick="calculateFormula()">Calculate ➜</button>
+                    <div id="formula-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Engineering Mathematics - Euler's Theorem Complete Calculator</p>
+            <p>Includes: Homogeneous Functions, Totient Function, and Euler's Formula</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== BACKEND LOGIC ====================
+
+        class EulerTheoremBackend {
+            // Homogeneous Function Verification
+            static verifyHomogeneousFunction(coeffs, degree, x, y) {
+                try {
+                    const f = this.evaluateFunction(coeffs, degree, x, y);
+
+                    // Numerical partial derivatives
+                    const h = 0.0001;
+                    const df_dx = (this.evaluateFunction(coeffs, degree, x + h, y) -
+                        this.evaluateFunction(coeffs, degree, x - h, y)) / (2 * h);
+                    const df_dy = (this.evaluateFunction(coeffs, degree, x, y + h) -
+                        this.evaluateFunction(coeffs, degree, x, y - h)) / (2 * h);
+
+                    const lhs = x * df_dx + y * df_dy;
+                    const rhs = degree * f;
+
+                    return {
+                        f: f.toFixed(6),
+                        df_dx: df_dx.toFixed(6),
+                        df_dy: df_dy.toFixed(6),
+                        lhs: lhs.toFixed(6),
+                        rhs: rhs.toFixed(6),
+                        verified: Math.abs(lhs - rhs) < 0.01,
+                        error: Math.abs(lhs - rhs).toFixed(6)
+                    };
+                } catch (error) {
+                    throw new Error('Calculation error: ' + error.message);
+                }
+            }
+
+            static evaluateFunction(coeffs, degree, x, y) {
+                return coeffs.reduce((sum, coeff, i) => {
+                    const power = degree - i;
+                    return sum + coeff * Math.pow(x, power) * Math.pow(y, i);
+                }, 0);
+            }
+
+            // Euler's Totient Function
+            static eulerTotient(n) {
+                if (n <= 0) throw new Error('n must be positive');
+                if (n === 1) return { phi: 1, coprimes: [1], factors: [], steps: ['φ(1) = 1'] };
+
+                let phi = n;
+                const factors = [];
+                const steps = [];
+                let temp = n;
+
+                // Prime factorization
+                for (let p = 2; p * p <= temp; p++) {
+                    if (temp % p === 0) {
+                        factors.push(p);
+                        steps.push(`Prime factor found: ${p}`);
+                        while (temp % p === 0) {
+                            temp = Math.floor(temp / p);
+                        }
+                    }
+                }
+                if (temp > 1) {
+                    factors.push(temp);
+                    steps.push(`Prime factor found: ${temp}`);
+                }
+
+                steps.push(`φ(${n}) = ${n} × ` + factors.map(p => `(1 - 1/${p})`).join(' × '));
+
+                for (let p of factors) {
+                    phi = Math.floor(phi * (p - 1) / p);
+                }
+
+                // Find coprimes
+                const coprimes = [];
+                for (let i = 1; i < n; i++) {
+                    if (this.gcd(i, n) === 1) coprimes.push(i);
+                }
+
+                steps.push(`φ(${n}) = ${phi}`);
+
+                return { phi, coprimes, factors, steps };
+            }
+
+            static gcd(a, b) {
+                while (b !== 0) {
+                    let temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+                return a;
+            }
+
+            // Euler's Formula
+            static eulerFormula(x) {
+                const radians = (x * Math.PI) / 180;
+                const real = Math.cos(radians);
+                const imag = Math.sin(radians);
+                const magnitude = Math.sqrt(real * real + imag * imag);
+                const phase = Math.atan2(imag, real) * 180 / Math.PI;
+
+                return {
+                    angle: x,
+                    radians: radians.toFixed(6),
+                    real: real.toFixed(6),
+                    imaginary: imag.toFixed(6),
+                    magnitude: magnitude.toFixed(6),
+                    phase: phase.toFixed(2),
+                    exponential: `e^(i${x}°)`,
+                    complex: `${real.toFixed(4)} ${imag >= 0 ? '+' : ''}${imag.toFixed(4)}i`
+                };
+            }
+        }
+
+        // ==================== UI FUNCTIONS ====================
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(panel => panel.classList.remove('active'));
+
+            // Remove active class from all tab buttons
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Clear results
+            document.getElementById('homo-results').innerHTML = '';
+            document.getElementById('totient-results').innerHTML = '';
+            document.getElementById('formula-results').innerHTML = '';
+        }
+
+        function updateCoefficients() {
+            const degree = parseInt(document.getElementById('degree').value);
+            const coeffsArray = Array(degree + 1).fill(1);
+            document.getElementById('coeffs').value = coeffsArray.join(', ');
+        }
+
+        function calculateHomogeneous() {
+            try {
+                const degree = parseInt(document.getElementById('degree').value);
+                const coeffs = document.getElementById('coeffs').value.split(',').map(c => parseFloat(c.trim()));
+                const x = parseFloat(document.getElementById('x').value);
+                const y = parseFloat(document.getElementById('y').value);
+
+                const result = EulerTheoremBackend.verifyHomogeneousFunction(coeffs, degree, x, y);
+
+                const html = `
+                    <div class="results">
+                        <h3>📊 Results</h3>
+                        <div class="result-item">
+                            <div class="result-label">Function value f(x,y):</div>
+                            <div class="result-value">${result.f}</div>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">∂f/∂x:</div>
+                                <div class="result-value">${result.df_dx}</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">∂f/∂y:</div>
+                                <div class="result-value">${result.df_dy}</div>
+                            </div>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">LHS: x(∂f/∂x) + y(∂f/∂y)</div>
+                                <div class="result-value">${result.lhs}</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">RHS: n·f(x,y)</div>
+                                <div class="result-value">${result.rhs}</div>
+                            </div>
+                        </div>
+                        <div class="${result.verified ? 'verified' : 'not-verified'}">
+                            ${result.verified ? '✓ Theorem Verified!' : '⚠ Verification Failed'}
+                            <br>Error: ${result.error}
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('homo-results').innerHTML = html;
+            } catch (error) {
+                document.getElementById('homo-results').innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+
+        function calculateTotient() {
+            try {
+                const n = parseInt(document.getElementById('n').value);
+                const result = EulerTheoremBackend.eulerTotient(n);
+
+                const html = `
+                    <div class="results">
+                        <h3>📊 Results</h3>
+                        <div class="result-item">
+                            <div class="result-label">φ(${n}):</div>
+                            <div class="result-value">${result.phi}</div>
+                        </div>
+                        ${result.factors.length > 0 ? `
+                        <div class="result-item">
+                            <div class="result-label">Prime Factors:</div>
+                            <div style="font-size: 18px; font-weight: 600; color: #333; margin-top: 8px;">
+                                ${result.factors.join(', ')}
+                            </div>
+                        </div>
+                        ` : ''}
+                        <div class="result-item">
+                            <div class="result-label">Calculation Steps:</div>
+                            <div class="steps-list">
+                                <ul>
+                                    ${result.steps.map(step => `<li>${step}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Coprime Numbers (${result.coprimes.length}):</div>
+                            <div class="coprime-list">${result.coprimes.join(', ')}</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('totient-results').innerHTML = html;
+            } catch (error) {
+                document.getElementById('totient-results').innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+
+        function calculateFormula() {
+            try {
+                const angle = parseFloat(document.getElementById('angle').value);
+                const result = EulerTheoremBackend.eulerFormula(angle);
+
+                const html = `
+                    <div class="results">
+                        <h3>📊 Results</h3>
+                        <div class="result-item">
+                            <div class="result-label">Exponential Form:</div>
+                            <div class="result-value">${result.exponential}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Complex Form:</div>
+                            <div class="result-value">${result.complex}</div>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Real Part (cos):</div>
+                                <div class="result-value">${result.real}</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Imaginary Part (sin):</div>
+                                <div class="result-value">${result.imaginary}</div>
+                            </div>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Magnitude:</div>
+                                <div class="result-value">${result.magnitude}</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Phase Angle:</div>
+                                <div class="result-value">${result.phase}°</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('formula-results').innerHTML = html;
+            } catch (error) {
+                document.getElementById('formula-results').innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
